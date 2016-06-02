@@ -19,11 +19,13 @@ public:
 	virtual void setChilds();
 	virtual direction chooseChild();
 	virtual int getValue();
+	virtual int getSuccess();
 	virtual Partida* getPartida();
 protected:
 
 private:
 	int value;
+	int success;
 	Partida* partida;
 };
 

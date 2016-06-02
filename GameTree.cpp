@@ -27,6 +27,11 @@ int GameTree::getValue() {
 	return value;
 }
 
+int GameTree::getSuccess() {
+
+	return success;
+}
+
 Partida* GameTree::getPartida() {
 
 	return partida;

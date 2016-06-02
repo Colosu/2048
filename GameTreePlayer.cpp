@@ -13,15 +13,38 @@
 #include <math.h>
 using namespace std;
 
-GameTreePlayer::GameTreePlayer(Partida* party, int parada, int plus) {
+GameTreePlayer::GameTreePlayer(Partida* party, int parada, int objetivo) {
 
-	value = plus;
+	value = 0;
+	success = 0;
 	partida = party;
 	stop = parada;
 	upTree = NULL;
 	downTree = NULL;
 	rightTree = NULL;
 	leftTree = NULL;
+	target = objetivo;
+
+
+	if (target == 0) {
+
+		int valor = 1;
+
+		for (int i = 0; i < partida->getTab()->getRows(); i++) {
+			valor *= partida->getTab()->getCasilla(i,0)->getNumber();
+		}
+
+		if (partida->getTab()->getCasilla(0,0)->getNumber() != partida->getMax()) {
+
+			target = 1;
+		} else if (valor == 0) {
+
+			target = 2;
+		} else {
+
+			target = 3;
+		}
+	}
 
 	int i = 0;
 	int j = 0;
@@ -103,7 +126,7 @@ void GameTreePlayer::setChilds() {
 	moves = party->moveLeft();
 	if (moves != 0) {
 
-		leftTree = new GameTreeComputer(party, stop - 1, 0);
+		leftTree = new GameTreeComputer(party, stop - 1, target);
 	} else {
 
 		leftTree = NULL;
@@ -114,7 +137,7 @@ void GameTreePlayer::setChilds() {
 	moves = party->moveUp();
 	if (moves != 0) {
 
-		upTree = new GameTreeComputer(party, stop - 1, 0);
+		upTree = new GameTreeComputer(party, stop - 1, target);
 	} else {
 
 		upTree = NULL;
@@ -125,7 +148,7 @@ void GameTreePlayer::setChilds() {
 	moves = party->moveDown();
 	if (moves != 0) {
 
-		downTree = new GameTreeComputer(party, stop - 1, 0);
+		downTree = new GameTreeComputer(party, stop - 1, target);
 	} else {
 
 		downTree = NULL;
@@ -136,7 +159,7 @@ void GameTreePlayer::setChilds() {
 	moves = party->moveRight();
 	if (moves != 0) {
 
-		rightTree = new GameTreeComputer(party, stop - 1, 0);
+		rightTree = new GameTreeComputer(party, stop - 1, target);
 	} else {
 
 		rightTree = NULL;
@@ -147,71 +170,127 @@ direction GameTreePlayer::chooseChild() {
 
 	direction dir = left;
 	int val = 0;
-//	int max = 0;
 
 
-	if (stop > 1) {
-		if (leftTree != NULL/* && leftTree->getPartida()->getMax()+(pow(2,leftTree->getPartida()->getZeros()))+leftTree->getPartida()->getAdyacentes() >= max*/) {
+	if (stop > 1 && success == 0) {
+		if (leftTree != NULL) {
 			leftTree->setChilds();
 			leftTree->chooseChild();
-//			max = leftTree->getPartida()->getMax()+(pow(2,leftTree->getPartida()->getZeros()))+leftTree->getPartida()->getAdyacentes();
 		} else {
 			delete leftTree;
 			leftTree = NULL;
 		}
-		if (upTree != NULL/* && upTree->getPartida()->getMax()+(pow(2,upTree->getPartida()->getZeros()))+upTree->getPartida()->getAdyacentes() >= max*/) {
+		if (upTree != NULL) {
 			upTree->setChilds();
 			upTree->chooseChild();
-//			max = upTree->getPartida()->getMax()+(pow(2,upTree->getPartida()->getZeros()))+upTree->getPartida()->getAdyacentes();
 		} else {
 			delete upTree;
 			upTree = NULL;
 		}
-		if (downTree != NULL/* && downTree->getPartida()->getMax()+(pow(2,downTree->getPartida()->getZeros()))+downTree->getPartida()->getAdyacentes() >= max*/) {
+		if (downTree != NULL) {
 			downTree->setChilds();
 			downTree->chooseChild();
-//			max = downTree->getPartida()->getMax()+(pow(2,downTree->getPartida()->getZeros()))+downTree->getPartida()->getAdyacentes();
 		} else {
 			delete downTree;
 			downTree = NULL;
 		}
-		if (rightTree != NULL/* && rightTree->getPartida()->getMax()+(pow(2,rightTree->getPartida()->getZeros()))+rightTree->getPartida()->getAdyacentes() >= max*/) {
+		if (rightTree != NULL) {
 			rightTree->setChilds();
 			rightTree->chooseChild();
-//			max = rightTree->getPartida()->getMax()+(pow(2,rightTree->getPartida()->getZeros()))+rightTree->getPartida()->getAdyacentes();
 		} else {
 			delete rightTree;
 			rightTree = NULL;
 		}
 	}
 
-	if (leftTree != NULL /*&& leftTree->getPartida()->getMax()+(pow(2,leftTree->getPartida()->getZeros()))+leftTree->getPartida()->getAdyacentes() >= max*/) {
-		dir = left;
-		val = leftTree->getValue();
-	}
-	if (upTree != NULL && upTree->getValue() > val /*&& upTree->getPartida()->getMax()+(pow(2,upTree->getPartida()->getZeros()))+upTree->getPartida()->getAdyacentes() >= max*/) {
-		dir = up;
-		val = upTree->getValue();
-	} else if (upTree != NULL && val == 0) {
-		dir = up;
-		val = upTree->getValue();
-	}
-	if (downTree != NULL && downTree->getValue() > val /*&& downTree->getPartida()->getMax()+(pow(2,downTree->getPartida()->getZeros()))+downTree->getPartida()->getAdyacentes() >= max*/) {
-		dir = down;
-		val = downTree->getValue();
-	} else if (downTree != NULL && val == 0) {
-		dir = down;
-		val = downTree->getValue();
-	}
-	if (rightTree != NULL && rightTree->getValue() > val /*&& rightTree->getPartida()->getMax()+(pow(2,rightTree->getPartida()->getZeros()))+rightTree->getPartida()->getAdyacentes() >= max*/) {
-		dir = right;
-		val = rightTree->getValue();
-	} else if (rightTree != NULL && val == 0) {
-		dir = right;
-		val = rightTree->getValue();
+	if (target != 3) {
+		if (leftTree != NULL) {
+			dir = left;
+			val = leftTree->getSuccess();
+		}
+		if (upTree != NULL && upTree->getSuccess() > val) {
+			dir = up;
+			val = upTree->getSuccess();
+		} else if (upTree != NULL && val == 0) {
+			dir = up;
+			val = upTree->getSuccess();
+		}
+		if (downTree != NULL && downTree->getSuccess() > val) {
+			dir = down;
+			val = downTree->getValue();
+		} else if (downTree != NULL && val == 0) {
+			dir = down;
+			val = downTree->getSuccess();
+		}
+		if (rightTree != NULL && rightTree->getSuccess() > val) {
+			dir = right;
+			val = rightTree->getSuccess();
+		} else if (rightTree != NULL && val == 0) {
+			dir = right;
+			val = rightTree->getSuccess();
+		}
+
+		success = val;
+
+		if (success == 0) {
+
+			if (leftTree != NULL) {
+				dir = left;
+				val = leftTree->getValue();
+			}
+			if (upTree != NULL && upTree->getValue() > val) {
+				dir = up;
+				val = upTree->getValue();
+			} else if (upTree != NULL && val == 0) {
+				dir = up;
+				val = upTree->getValue();
+			}
+			if (downTree != NULL && downTree->getValue() > val) {
+				dir = down;
+				val = downTree->getValue();
+			} else if (downTree != NULL && val == 0) {
+				dir = down;
+				val = downTree->getValue();
+			}
+			if (rightTree != NULL && rightTree->getValue() > val) {
+				dir = right;
+				val = rightTree->getValue();
+			} else if (rightTree != NULL && val == 0) {
+				dir = right;
+				val = rightTree->getValue();
+			}
+			value += val;
+		}
+	} else {
+
+		if (leftTree != NULL) {
+			dir = left;
+			val = leftTree->getValue();
+		}
+		if (upTree != NULL && upTree->getValue() > val) {
+			dir = up;
+			val = upTree->getValue();
+		} else if (upTree != NULL && val == 0) {
+			dir = up;
+			val = upTree->getValue();
+		}
+		if (downTree != NULL && downTree->getValue() > val) {
+			dir = down;
+			val = downTree->getValue();
+		} else if (downTree != NULL && val == 0) {
+			dir = down;
+			val = downTree->getValue();
+		}
+		if (rightTree != NULL && rightTree->getValue() > val) {
+			dir = right;
+			val = rightTree->getValue();
+		} else if (rightTree != NULL && val == 0) {
+			dir = right;
+			val = rightTree->getValue();
+		}
+		value += val;
 	}
 
-	value += val;
 
 	return dir;
 }
@@ -219,6 +298,11 @@ direction GameTreePlayer::chooseChild() {
 int GameTreePlayer::getValue() {
 
 	return value;
+}
+
+int GameTreePlayer::getSuccess() {
+
+	return success;
 }
 
 Partida* GameTreePlayer::getPartida() {
