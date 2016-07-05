@@ -150,14 +150,22 @@ bool Vista::mostrarFinal(int &ancho, int &alto) {
 		SDL_RenderClear(window->getTexturas()->getRenderizado());
 
 		SDL_QueryTexture(inicio, NULL, NULL, &ancho, &alto);
-		window->getTexturas()->renderizarTextura(inicio, (window->getX() / 2) - (ancho / 2), ((window->getY() + window->getExtraY()) / 10)*5 - (alto / 2));
-		window->getTexturas()->renderizarTextura(inicio, (window->getX() / 2) - (ancho / 2), ((window->getY() + window->getExtraY()) / 10)*8 - (alto / 2));
+		window->getTexturas()->renderizarTextura(inicio, (window->getX() / 2) - (ancho / 2), ((window->getY() + window->getExtraY()) / 10)*6 - (alto / 2));
+		window->getTexturas()->renderizarTextura(inicio, (window->getX() / 2) - (ancho / 2), ((window->getY() + window->getExtraY()) / 20)*17 - (alto / 2));
 		SDL_QueryTexture(titulo, NULL, NULL, &ancho, &alto);
 		window->getTexturas()->renderizarTextura(titulo, (window->getX() / 2) - (ancho / 2), ((window->getY() + window->getExtraY()) / 5) - (alto / 2));
 		SDL_QueryTexture(automatico, NULL, NULL, &ancho, &alto);
-		window->getTexturas()->renderizarTextura(automatico, (window->getX() / 2) - (ancho / 2), ((window->getY() + window->getExtraY()) / 10)*5 - (alto / 2));
+		window->getTexturas()->renderizarTextura(automatico, (window->getX() / 2) - (ancho / 2), ((window->getY() + window->getExtraY()) / 10)*6 - (alto / 2));
 		SDL_QueryTexture(manual, NULL, NULL, &ancho, &alto);
-		window->getTexturas()->renderizarTextura(manual, (window->getX() / 2) - (ancho / 2), ((window->getY() + window->getExtraY()) / 10)*8 - (alto / 2));
+		window->getTexturas()->renderizarTextura(manual, (window->getX() / 2) - (ancho / 2), ((window->getY() + window->getExtraY()) / 20)*17 - (alto / 2));
+
+		max = controlador->getPartida()->getMax();
+		punt = controlador->getPartida()->getPunt();
+		window->getTexturas()->renderizarTextura(window->getTexturas()->getPuntuacion(), 50, 150 + 40);
+		window->getTexturas()->setMaximo(max);
+		window->getTexturas()->setPuntos(punt);
+		window->getTexturas()->renderizarTextura(window->getTexturas()->getMaximo(), 100, 150 + 40);
+		window->getTexturas()->renderizarTextura(window->getTexturas()->getPuntos(), 280, 150 + 40);
 
 		SDL_RenderPresent(window->getTexturas()->getRenderizado());
 

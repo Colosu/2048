@@ -48,33 +48,25 @@ GameTreeComputer::GameTreeComputer(Partida* party, int parada, int objetivo) {
 
 		if (partida->getTab()->getCasilla(0,0)->getNumber() == partida->getMax()) {
 
-			success = stop*partida->getMax();
+			success = stop;
 		}
 	} else if (target == 2) {
 
 		int valor = 1;
-		int val = 0;
 
 		for (int i = 0; i < partida->getTab()->getRows(); i++) {
-			if (i == 0) {
-				val += partida->getTab()->getCasilla(i,0)->getNumber()*partida->getTab()->getCasilla(i,0)->getNumber()*20;
-			} else if (i < partida->getTab()->getRows()) {
-				val += partida->getTab()->getCasilla(i,0)->getNumber()*partida->getTab()->getCasilla(i,0)->getNumber()*(20-(i*2));
-			}
 			valor *= partida->getTab()->getCasilla(i,0)->getNumber();
 		}
 		if (valor != 0) {
 
-			success = stop*val;
+			success = stop;
 		}
 	}
 
 	value = partida->getPunt();
 	for (int i = 0; i < partida->getTab()->getRows(); i++) {
 		for (int j = 0; j < partida->getTab()->getColumns(); j++) {
-			if (i == 0 && j == 0) {
-				value += partida->getTab()->getCasilla(i,j)->getNumber()*partida->getTab()->getCasilla(i,j)->getNumber()*20;
-			} else if (j == 0 && i < partida->getTab()->getRows()) {
+			if (j == 0 && i < partida->getTab()->getRows()) {
 				value += partida->getTab()->getCasilla(i,j)->getNumber()*partida->getTab()->getCasilla(i,j)->getNumber()*(20-(i*2));
 			} else if (j == 1) {
 				value += partida->getTab()->getCasilla(i,j)->getNumber()*partida->getTab()->getCasilla(i,j)->getNumber()*(10-(partida->getTab()->getRows()-i)*2);
@@ -87,10 +79,10 @@ GameTreeComputer::GameTreeComputer(Partida* party, int parada, int objetivo) {
 
 	if(partida->getMax() == 2048) {
 
-		value += 10000000000;
+		value += 2048*2048;
 	} else if (partida->isFinished()) {
 
-		value -= 10000000000;
+		value -= 2048*2048;
 	}
 
 

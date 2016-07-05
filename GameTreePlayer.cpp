@@ -46,7 +46,7 @@ GameTreePlayer::GameTreePlayer(Partida* party, int parada, int objetivo) {
 		}
 	}
 
-	int i = 0;
+	/*int i = 0;
 	int j = 0;
 	partida->getTab()->getLastDos(i,j);
 	value -= partida->getTurn()*2;
@@ -94,7 +94,7 @@ GameTreePlayer::GameTreePlayer(Partida* party, int parada, int objetivo) {
 	}
 	if (j > 0 && partida->getTab()->getCasilla(i,j-1)->getNumber() > partida->getTab()->getCasilla(i,j)->getNumber()) {
 		value -= partida->getTurn()*4;
-	}
+	}*/
 }
 
 GameTreePlayer::~GameTreePlayer() {
