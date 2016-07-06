@@ -135,7 +135,7 @@ void Tablero::randomCasilla() {
 	}
 	
 	int num = rand() % 100;
-	if (num < 99) {
+	if (num < 90) {
 		num = 2;
 	} else {
 		num = 4;
