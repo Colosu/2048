@@ -74,7 +74,7 @@ void Casilla::setNumber(int num) {
 
 Casilla& Casilla::operator =(const Casilla &A) {
 
-    if(this!=&A && &A != NULL){
+    if(this!=&A && &A != 0){
         this->number = A.number;
         this->position[0] = A.position[0];
         this->position[1] = A.position[1];
